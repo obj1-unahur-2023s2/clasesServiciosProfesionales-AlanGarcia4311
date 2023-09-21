@@ -1,29 +1,45 @@
-// esta clase está completa, no necesita nada más
 class ProfesionalAsociado {
-	var universidad
-	
-	method universidad() { return universidad }
-	method universidad(univ) { universidad = univ }
-	
+	var property universidad
+
 	method provinciasDondePuedeTrabajar() { return #{"Entre Ríos", "Corrientes", "Santa Fe"} }
 	
 	method honorariosPorHora() { return 3000 }
 }
 
 
-// a esta clase le faltan métodos
 class ProfesionalVinculado {
-	var universidad
+	var property universidad
 	
-	method universidad() { return universidad }
-	method universidad(univ) { universidad = univ }
+	method provinciasDondePuedeTrabajar() = [universidad.provinciaDondeEsta()]
+	
+	method honorariosPorHora() = universidad.honorariosPorHora()
+	
 }
 
-
-// a esta clase le faltan atributos y métodos
 class ProfesionalLibre {
-	var universidad
+	var property universidad
+	var property provinciasDondePuedeTrabajar
+	var property honorariosRecomendados
+}
+
+class Universidad{
+	var property provincia = "Santa Fe"
+	var property honorariosRecomendados = 0
 	
-	method universidad() { return universidad }
-	method universidad(univ) { universidad = univ }
+	method provinciaDondeEsta() = provincia
+	method honorariosPorHora() = honorariosRecomendados
+}
+
+class Empresa{
+	const profesionales = []
+	var property honorarioReferencia
+	
+	method contratar(p){
+		profesionales.add(p)
+	}
+	method cantProfesionalesEstudiadosEn(universidad) = profesionales.filter({x=>x.universidad() == universidad}).size()
+	method profesionalesCaros() = profesionales.filter({x=>x.honorariosPorHora() > honorarioReferencia})
+	method universidadesFormadoras() = profesionales.map({x=>x.universidad()})
+	method profesionalMasBarato() = profesionales.min({x=>x.honorariosPorHora()})
+	method genteAcotada() = profesionales.all({x=>x.provinciasDondePuedeTrabajar().size() <= 3})
 }
