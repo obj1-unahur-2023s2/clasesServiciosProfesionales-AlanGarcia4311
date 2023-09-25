@@ -1,45 +1,42 @@
+import universidad.*
+
 class ProfesionalAsociado {
 	var property universidad
 
 	method provinciasDondePuedeTrabajar() { return #{"Entre Ríos", "Corrientes", "Santa Fe"} }
 	
 	method honorariosPorHora() { return 3000 }
+	
+	method cobrar(importe) = universidad.recibirDonacion(importe/2)
 }
 
 
 class ProfesionalVinculado {
 	var property universidad
 	
-	method provinciasDondePuedeTrabajar() = [universidad.provinciaDondeEsta()]
+	method provinciasDondePuedeTrabajar() = #{universidad.provinciaDondeEsta()}
 	
 	method honorariosPorHora() = universidad.honorariosPorHora()
 	
+	method cobrar(importe) { asociacionDelLitoral.recibirDonacion(importe) }
 }
 
 class ProfesionalLibre {
 	var property universidad
-	var property provinciasDondePuedeTrabajar
-	var property honorariosRecomendados
-}
-
-class Universidad{
-	var property provincia = "Santa Fe"
-	var property honorariosRecomendados = 0
+	const provinciasDondePuedeTrabajar = #{}
+	var property honorariosPorHora
+	var totalRecaudado = 0
 	
-	method provinciaDondeEsta() = provincia
-	method honorariosPorHora() = honorariosRecomendados
-}
-
-class Empresa{
-	const profesionales = []
-	var property honorarioReferencia
+	method agregarProvincia(unaProvincia) = provinciasDondePuedeTrabajar.add(unaProvincia)
+	method quitarProvincia(unaProvincia) = provinciasDondePuedeTrabajar.remove(unaProvincia)
+	method provinciasDondePuedeTrabajar() = provinciasDondePuedeTrabajar
 	
-	method contratar(p){
-		profesionales.add(p)
+	
+	method cobrar(importe) { totalRecaudado += importe }
+	method pasarDinero(profesional, dinero) { 
+		if (totalRecaudado < dinero) 
+		self.error("El profesional no tiene dinero sufiente") 
+		else { totalRecaudado -= dinero
+			profesional.cobrar(dinero) }
 	}
-	method cantProfesionalesEstudiadosEn(universidad) = profesionales.filter({x=>x.universidad() == universidad}).size()
-	method profesionalesCaros() = profesionales.filter({x=>x.honorariosPorHora() > honorarioReferencia})
-	method universidadesFormadoras() = profesionales.map({x=>x.universidad()})
-	method profesionalMasBarato() = profesionales.min({x=>x.honorariosPorHora()})
-	method genteAcotada() = profesionales.all({x=>x.provinciasDondePuedeTrabajar().size() <= 3})
 }

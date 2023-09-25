@@ -1,13 +1,16 @@
+import profesionales.*
+
 class Personas {
 	var property provincia
-
-	method esPosibleSerAtendidoPorProfesional() 
+	method puedeAtenderloUnProfesional(profesional) = profesional.provinciasDondePuedeTrabajar().contains(provincia)
 }
 
 class Instituciones {
-	method esPosibleSerAtendidoPorProfesional()
+	const universidades = #{}
+	method puedeAtenderloUnProfesional(profesional) = universidades.contains(profesional.universidad())
 }
 
 class Clubes {
-	method esPosibleSerAtendidoPorProfesional()
+	const provincias = #{}
+	method puedeAtenderloUnProfesional(profesional) = not provincias.intersection(profesional.provinciasDondePuedeTrabajar()).isEmpty()
 }

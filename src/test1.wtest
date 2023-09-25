@@ -1,0 +1,42 @@
+import profesionales.*
+import universidad.*
+import empresas.*
+
+describe "test etapa 1"{	
+	const sanMartin = new Universidad(provincia="buenos aires", honorariosRecomendados=3500, donacionesTotales=0)
+	const rosario = new Universidad(provincia="santa fe", honorariosRecomendados=2800, donacionesTotales=0)
+	const corrientes = new Universidad(provincia="corrientes", honorariosRecomendados=4200, donacionesTotales=0)
+	const hurlingham = new Universidad(provincia="buenos aires", honorariosRecomendados=8800, donacionesTotales=0)
+	
+	const juana = new ProfesionalVinculado(universidad=rosario)
+	const melina = new ProfesionalAsociado(universidad=corrientes)
+	const rocio = new ProfesionalLibre(universidad=hurlingham, honorariosPorHora=5000, 
+										provinciasDondePuedeTrabajar=#{"santa fe", "cordoba", "buenos aires"})
+	const luciana = new ProfesionalLibre(universidad=rosario, honorariosPorHora=3200,
+										provinciasDondePuedeTrabajar=#{"santa fe", "entre rios"})
+	
+	const empresa1 = new Empresa(honorarioReferencia=3500)
+	
+	method initialize(){
+		empresa1.contratar(juana)
+		empresa1.contratar(melina)
+		empresa1.contratar(rocio)
+		empresa1.contratar(luciana)
+	}
+	
+	test "dos de los profesiones de la empresa1 estudiaron en rosario"{
+		assert.equals(2,empresa1.cantProfesionalesEstudiadosEn(rosario))
+	}
+	test "ningún profesional de la empresa1 estudió en san martin"{
+		assert.equals(0,empresa1.cantProfesionalesEstudiadosEn(sanMartin))
+	}
+	test "solo rocío es profesional caro en la empresa1"{
+		assert.equals(#{rocio}, empresa1.profesionalesCaros())
+	}
+	test "las universidades formadoras son las de rosario, corrientes y hurlingham"{
+		assert.equals(#{rosario, corrientes, hurlingham}, empresa1.universidadesFormadoras())
+	}
+	test "el profesional más barato de la empresa1 es juana"{
+		assert.equals(juana, empresa1.profesionalMasBarato())
+	}
+}
